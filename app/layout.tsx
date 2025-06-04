@@ -5,7 +5,7 @@ import { Providers } from '@/components/providers'
 export const metadata: Metadata = {
   title: '火占术社娘',
   description: 'Created with 火占术社娘',
-  generator: 'astricia.dev',
+  generator: 'neuq-anime',
 }
 
 export default function RootLayout({
