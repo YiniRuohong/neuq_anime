@@ -13,17 +13,25 @@ export function ImmersiveMap() {
   const [translate, setTranslate] = useState({ x: 0, y: 0 })
   const [scale, setScale] = useState(1)
 
-  const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault()
+  const startDragging = (x: number, y: number) => {
     setIsDragging(true)
-    setOrigin([e.clientX - translate.x, e.clientY - translate.y])
+    setOrigin([x - translate.x, y - translate.y])
   }
 
-  const onMouseMove = (e: MouseEvent) => {
-    if (!isDragging) return
+  const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault()
-    const rawX = e.clientX - origin[0]
-    const rawY = e.clientY - origin[1]
+    startDragging(e.clientX, e.clientY)
+  }
+
+  const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    const touch = e.touches[0]
+    if (!touch) return
+    startDragging(touch.clientX, touch.clientY)
+  }
+
+  const handleMove = (x: number, y: number) => {
+    const rawX = x - origin[0]
+    const rawY = y - origin[1]
     const container = containerRef.current?.getBoundingClientRect()
     const imgW = typeof mapSrc === 'object' ? (mapSrc as StaticImageData).width : 0
     const imgH = typeof mapSrc === 'object' ? (mapSrc as StaticImageData).height : 0
@@ -38,11 +46,28 @@ export function ImmersiveMap() {
     }
   }
 
-  const onMouseUp = (e: MouseEvent) => {
+  const onMouseMove = (e: MouseEvent) => {
+    if (!isDragging) return
+    e.preventDefault()
+    handleMove(e.clientX, e.clientY)
+  }
+
+  const onTouchMove = (e: TouchEvent) => {
+    if (!isDragging) return
+    const touch = e.touches[0]
+    if (!touch) return
+    handleMove(touch.clientX, touch.clientY)
+  }
+
+  const endDragging = () => {
     if (isDragging) {
       setIsDragging(false)
     }
   }
+
+  const onMouseUp = () => endDragging()
+
+  const onTouchEnd = () => endDragging()
 
   const onWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     e.preventDefault()
@@ -59,13 +84,19 @@ export function ImmersiveMap() {
     if (isDragging) {
       window.addEventListener('mousemove', onMouseMove)
       window.addEventListener('mouseup', onMouseUp)
+      window.addEventListener('touchmove', onTouchMove)
+      window.addEventListener('touchend', onTouchEnd)
     } else {
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('mouseup', onMouseUp)
+      window.removeEventListener('touchmove', onTouchMove)
+      window.removeEventListener('touchend', onTouchEnd)
     }
     return () => {
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('mouseup', onMouseUp)
+      window.removeEventListener('touchmove', onTouchMove)
+      window.removeEventListener('touchend', onTouchEnd)
     }
   }, [isDragging])
 
@@ -87,6 +118,7 @@ export function ImmersiveMap() {
     <div
       ref={containerRef}
       onMouseDown={onMouseDown}
+      onTouchStart={onTouchStart}
       onWheel={onWheel}
       style={{
         width: '100%',
@@ -96,6 +128,7 @@ export function ImmersiveMap() {
         cursor: isDragging ? 'grabbing' : 'grab',
         position: 'relative',
         userSelect: 'none',
+        touchAction: 'none',
       }}
     >
       <img
