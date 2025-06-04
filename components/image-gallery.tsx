@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -26,7 +26,11 @@ const SISTERS: Record<"younger" | "older", Sister> = {
 
 export function ImageGallery() {
   const [current, setCurrent] = useState<"younger" | "older">("younger")
-  const info = SISTERS[current]
+  const [info, setInfo] = useState<Sister>(SISTERS[current])
+
+  useEffect(() => {
+    setInfo(SISTERS[current])
+  }, [current])
 
   return (
     <Card className="shadow-md">
