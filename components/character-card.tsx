@@ -29,18 +29,38 @@ export function CharacterCard() {
   const info = SISTERS[current]
 
   return (
-    <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
-      <CardHeader className="text-center">
+    <Card className="rounded-xl bg-white/70 dark:bg-slate-800/70 backdrop-blur-md shadow-md">
+      <CardHeader className="text-center pb-0">
         <CardTitle className="text-2xl font-bold">{info.name}</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex justify-center">
-          <Image src={info.image} alt={info.name} width={300} height={500} className="rounded-lg object-cover" />
+      <CardContent className="p-6 pt-4 flex flex-col md:flex-row items-center gap-6">
+        <div className="md:w-1/2 space-y-4">
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-center md:text-left">
+            {info.bio}
+          </p>
+          <div className="flex justify-center md:justify-start gap-2 pt-2">
+            <Button
+              variant={current === "younger" ? "default" : "outline"}
+              onClick={() => setCurrent("younger")}
+            >
+              妹妹
+            </Button>
+            <Button
+              variant={current === "older" ? "default" : "outline"}
+              onClick={() => setCurrent("older")}
+            >
+              姐姐
+            </Button>
+          </div>
         </div>
-        <p className="whitespace-pre-wrap text-sm leading-relaxed">{info.bio}</p>
-        <div className="flex justify-center gap-2 pt-2">
-          <Button variant={current === "younger" ? "default" : "outline"} onClick={() => setCurrent("younger")}>妹妹</Button>
-          <Button variant={current === "older" ? "default" : "outline"} onClick={() => setCurrent("older")}>姐姐</Button>
+        <div className="md:w-1/2 flex justify-center">
+          <Image
+            src={info.image}
+            alt={info.name}
+            width={350}
+            height={450}
+            className="rounded-xl object-cover w-auto h-[450px]"
+          />
         </div>
       </CardContent>
     </Card>

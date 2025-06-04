@@ -33,22 +33,34 @@ export function ImageGallery() {
   }, [current])
 
   return (
-    <Card className="shadow-md">
-      <CardContent className="p-6 space-y-4">
-        <div className="flex justify-center">
+    <Card className="rounded-xl bg-white/70 dark:bg-slate-800/70 backdrop-blur-md shadow-md">
+      <CardContent className="p-6 flex flex-col md:flex-row items-center gap-6">
+        <div className="md:w-1/2 space-y-4 order-last md:order-first">
+          <h3 className="text-xl font-semibold text-center md:text-left">{info.name}</h3>
+          <p className="text-sm whitespace-pre-wrap leading-relaxed text-center md:text-left">{info.bio}</p>
+          <div className="flex justify-center md:justify-start gap-2 pt-2">
+            <Button
+              variant={current === "younger" ? "default" : "outline"}
+              onClick={() => setCurrent("younger")}
+            >
+              妹妹
+            </Button>
+            <Button
+              variant={current === "older" ? "default" : "outline"}
+              onClick={() => setCurrent("older")}
+            >
+              姐姐
+            </Button>
+          </div>
+        </div>
+        <div className="md:w-1/2 flex justify-center">
           <Image
             src={info.image}
             alt={info.name}
-            width={600}
-            height={800}
-            className="rounded-md object-cover"
+            width={350}
+            height={450}
+            className="rounded-xl object-cover w-auto h-[450px]"
           />
-        </div>
-        <h3 className="text-xl font-semibold text-center">{info.name}</h3>
-        <p className="text-sm whitespace-pre-wrap leading-relaxed">{info.bio}</p>
-        <div className="flex justify-center gap-2 pt-2">
-          <Button variant={current === "younger" ? "default" : "outline"} onClick={() => setCurrent("younger")}>妹妹</Button>
-          <Button variant={current === "older" ? "default" : "outline"} onClick={() => setCurrent("older")}>姐姐</Button>
         </div>
       </CardContent>
     </Card>
