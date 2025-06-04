@@ -13,7 +13,6 @@ const PhotoGallery = dynamic(
   () => import('@/components/photo-gallery').then(mod => mod.PhotoGallery),
   { ssr: false, loading: () => <div className="h-60 bg-gray-200 animate-pulse rounded-md mb-4" /> }
 )
-import { ScrollIndicator } from "@/components/scroll-indicator"
 import { ScrollHandler } from "@/components/scroll-handler"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { BackToTopButton } from "@/components/back-to-top-button"
