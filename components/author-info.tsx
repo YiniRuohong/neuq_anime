@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { useTranslation } from "@/lib/i18n/use-translation"
 import { Globe, Twitter } from "lucide-react"
 import Link from "next/link"
+import { siteConfig } from "@/lib/site-config"
 
 export function AuthorInfo() {
   const { t } = useTranslation()
@@ -15,7 +16,7 @@ export function AuthorInfo() {
       <CardContent className="p-6">
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <Avatar className="h-16 w-16 border-2 border-purple-500">
-            <AvatarImage src="/placeholder-user.jpg" alt={t("author.name")} />
+            <AvatarImage src={siteConfig.assets.authorAvatar} alt={t("author.name")} />
             <AvatarFallback>FZ</AvatarFallback>
           </Avatar>
 
@@ -26,12 +27,12 @@ export function AuthorInfo() {
 
           <div className="flex gap-2 mt-4 sm:mt-0">
             <Button variant="outline" size="icon" asChild>
-              <Link href="https://neuq-ani.me" target="_blank" aria-label={t("author.blog")}>
+              <Link href={siteConfig.links.officialSite} target="_blank" aria-label={t("author.blog")}>
                 <Globe className="h-4 w-4" />
               </Link>
             </Button>
             <Button variant="outline" size="icon" asChild>
-              <Link href="https://x.com/Yini_Ruohong" target="_blank" aria-label="Twitter">
+              <Link href={siteConfig.links.twitter} target="_blank" aria-label="Twitter">
                 <Twitter className="h-4 w-4" />
               </Link>
             </Button>

@@ -9,9 +9,9 @@ const config: Config = {
     "*.{js,ts,jsx,tsx,mdx}"
   ],
   theme: {
-    // System font stack for a clean, modern look
     fontFamily: {
       sans: [
+        '"LXGW WenKai"',
         '-apple-system',
         'BlinkMacSystemFont',
         'Segoe UI',

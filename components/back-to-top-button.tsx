@@ -1,58 +1,60 @@
 "use client"
 
-import { ChevronUp } from "lucide-react"
-import { useEffect, useState } from "react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect, useRef } from "react"
+import { ArrowUp } from "lucide-react"
 import { useTranslation } from "@/lib/i18n/use-translation"
 
 export function BackToTopButton() {
-  const [visible, setVisible] = useState(false)
   const { t } = useTranslation()
+  const [isVisible, setIsVisible] = useState(false)
+  const rafRef = useRef<number | null>(null)
 
   useEffect(() => {
-    const handleScroll = () => {
-      const windowHeight = window.innerHeight
-      const currentScrollY = window.scrollY
-
-      // 只在相册页显示（滚动超过一个屏幕高度）
-      if (currentScrollY > windowHeight * 0.9) {
-        setVisible(true)
-      } else {
-        setVisible(false)
-      }
+    const toggleVisibility = () => {
+      const main = document.querySelector("main") as HTMLElement | null
+      const scrollY = main ? main.scrollTop : window.scrollY
+      setIsVisible(scrollY > 500)
     }
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
+    // 用 RAF 防抖
+    const onScroll = () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      rafRef.current = requestAnimationFrame(toggleVisibility)
+    }
+
+    const main = document.querySelector("main")
+    const target = main || window
+    target.addEventListener("scroll", onScroll, { passive: true })
+    toggleVisibility()
+
+    return () => {
+      target.removeEventListener("scroll", onScroll)
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
   }, [])
 
   const scrollToTop = () => {
-    // 标记这是按钮触发的滚动，避免吸附逻辑干扰
-    if (window.markButtonScroll) {
-      window.markButtonScroll()
+    const main = document.querySelector("main") as HTMLElement | null
+    if (main) {
+      main.scrollTo({ top: 0, behavior: "smooth" })
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" })
     }
-
-    // 直接滚动到页面顶部
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    })
   }
 
   return (
-    <Button
-      variant="secondary"
-      size="icon"
-      className={cn(
-        "fixed right-6 bottom-6 z-50 rounded-full shadow-md transition-all duration-300",
-        "bg-white/80 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-800",
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none",
-      )}
+    <button
       onClick={scrollToTop}
+      className={`fixed bottom-8 right-8 z-40 w-14 h-14 rounded-full bg-[var(--primary)] text-white shadow-lg transition-all duration-500 hover:scale-110 hover:shadow-xl ${
+        isVisible ? "translate-y-0 opacity-100" : "translate-y-20 opacity-0 pointer-events-none"
+      }`}
       aria-label={t("actions.backToTop")}
     >
-      <ChevronUp className="h-5 w-5 text-purple-500" />
-    </Button>
+      <div className="absolute inset-0 rounded-full bg-[var(--primary)] animate-ping opacity-20" />
+      <div className="relative flex items-center justify-center">
+        <ArrowUp className="w-6 h-6" />
+      </div>
+      <div className="absolute inset-0 rounded-full border-2 border-white/30" />
+    </button>
   )
 }

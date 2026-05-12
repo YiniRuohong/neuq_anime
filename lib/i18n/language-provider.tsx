@@ -1,8 +1,7 @@
 "use client"
 
 import { createContext, useState, useEffect, type ReactNode } from "react"
-
-type Language = "en" | "zh" | "ja"
+import type { Language } from "./translations"
 
 interface LanguageContextType {
   language: Language
@@ -18,7 +17,6 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>("zh")
 
   useEffect(() => {
-    // Try to get language from localStorage
     const savedLanguage = localStorage.getItem("language") as Language | null
     if (savedLanguage && ["en", "zh", "ja"].includes(savedLanguage)) {
       setLanguage(savedLanguage as Language)

@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌸 NEUQ动漫社 - 社娘展示</title>
+  <link href="https://unpkg.com/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Regular/result.css" rel="stylesheet">
+  <link href="https://unpkg.com/@chinese-fonts/lxgwwenkai@3.0.0/dist/LXGWWenKai-Medium/result.css" rel="stylesheet">
+  <style>
+    :root {
+      --sakura-50: #fff0f5;
+      --sakura-200: #fecfe0;
+      --sakura-300: #fda4c8;
+      --sakura-400: #fb64a6;
+      --sakura-500: #f43f88;
+      --indigo-950: #1a1a3e;
+      --indigo-900: #25255a;
+      --indigo-800: #2d3462;
+      --cream: #faf7f0;
+      --warm-white: #fffcfa;
+      --background: var(--warm-white);
+      --foreground: var(--indigo-950);
+      --card: var(--cream);
+      --border: var(--sakura-200);
+      --primary: var(--sakura-500);
+    }
+    
+    body.dark {
+      --background: var(--indigo-950);
+      --foreground: var(--cream);
+      --card: var(--indigo-900);
+      --border: rgba(253, 164, 200, 0.2);
+      --primary: var(--sakura-400);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "LXGW WenKai", -apple-system, sans-serif;
+      background: var(--background);
+      color: var(--foreground);
+      transition: background 0.5s ease, color 0.5s ease;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.8;
+    }
+
+    .gradient-mesh {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      background: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(254, 207, 224, 0.4), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(220, 230, 204, 0.3), transparent);
+    }
+
+    body.dark .gradient-mesh {
+      background: 
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(251, 100, 166, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(45, 52, 98, 0.4), transparent);
+    }
+
+    .sakura-petal {
+      position: fixed;
+      width: 12px; height: 12px;
+      background: linear-gradient(135deg, #fda4c8 0%, #ffeff6 50%, #fecfe0 100%);
+      border-radius: 50% 0 50% 50%;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 0;
+      animation: fall 8s linear infinite;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-50px) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .theme-toggle {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 20px;
+    }
+
+    .theme-toggle:hover { transform: scale(1.1); box-shadow: 0 4px 20px rgba(244, 63, 136, 0.2); }
+
+    main { padding-top: 80px; padding-bottom: 60px; }
+
+    .hero {
+      text-align: center;
+      padding: 40px 20px 60px;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: var(--sakura-50);
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    body.dark .badge { background: var(--indigo-800); }
+
+    h1 {
+      font-family: "LXGW WenKai", cursive;
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    h1 .sakura-icon { color: var(--sakura-500); }
+    body.dark h1 .sakura-icon { color: var(--sakura-400); }
+
+    .hero p { font-size: 1.1rem; opacity: 0.7; max-width: 400px; margin: 0 auto; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 角色卡片 - 固定高度避免跳动 */
+    .character-card {
+      max-width: 1200px;
+      margin: 0 auto 80px;
+      padding: 0 20px;
+    }
+
+    .wagahai-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: 0 4px 6px -1px rgba(26, 26, 62, 0.08);
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      min-height: 620px;
+      animation: fadeInUp 0.8s 0.2s ease backwards;
+    }
+
+    body.dark .wagahai-card { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); }
+
+    /* 装饰背景圆圈 */
+    .decoration-circle {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.15;
+      transition: all 0.7s ease;
+      pointer-events: none;
+    }
+
+    .decor-1 { width: 256px; height: 256px; top: -80px; right: -80px; background: #fda4c8; }
+    .decor-2 { width: 320px; height: 320px; bottom: -120px; left: -120px; background: #f43f88; }
+
+    .card-content {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 60px;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 900px) {
+      .card-content { grid-template-columns: 1fr; gap: 40px; }
+      .wagahai-card { min-height: auto; }
+    }
+
+    .tab-group {
+      display: inline-flex;
+      background: var(--sakura-50);
+      padding: 4px;
+      border-radius: 16px;
+      gap: 4px;
+      margin-bottom: 24px;
+    }
+
+    body.dark .tab-group { background: var(--indigo-800); }
+
+    .tab-button {
+      padding: 10px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: transparent;
+      border: none;
+      color: var(--foreground);
+      opacity: 0.6;
+    }
+
+    .tab-button:hover { opacity: 0.9; background: rgba(255,255,255,0.5); }
+    .tab-button.active { opacity: 1; background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(244, 63, 136, 0.3); }
+
+    .character-info { min-height: 420px; }
+
+    .character-info h2 {
+      font-family: "LXGW WenKai", cursive;
+      font-size: 2.5rem;
+      margin-bottom: 4px;
+    }
+
+    .name-en {
+      font-size: 14px;
+      opacity: 0.6;
+      margin-bottom: 16px;
+      font-weight: 500;
+      font-family: "LXGW WenKai", sans-serif;
+    }
+
+    .personality-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .stat-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .stat-badge:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(244, 63, 136, 0.15); }
+    body.dark .stat-badge { background: rgba(45, 52, 98, 0.5); }
+
+    .bio {
+      position: relative;
+      padding-left: 20px;
+      font-size: 15px;
+      line-height: 1.85;
+      opacity: 0.85;
+      white-space: pre-line;
+    }
+
+    .bio::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      border-radius: 3px;
+      background: var(--primary);
+      transition: background 0.3s ease;
+    }
+
+    .meta-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 24px;
+      font-size: 12px;
+      opacity: 0.5;
+    }
+
+    /* 图片区域 - 固定尺寸不变 */
+    .character-image-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 520px;
+    }
+
+    @media (max-width: 900px) {
+      .character-image-container { min-height: auto; }
+    }
+
+    .image-frame {
+      position: relative;
+      width: 380px;
+      height: 520px;
+      border-radius: 20px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 480px) {
+      .image-frame { width: 300px; height: 410px; }
+    }
+
+    /* 图片本身 - 无边框无底色 */
+    .image-frame img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      transition: opacity 0.3s ease, transform 0.5s ease;
+    }
+
+    .image-frame:hover img { transform: scale(1.02); }
+
+    /* 图片内阴影遮罩 */
+    .image-frame::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      box-shadow: inset 0 0 40px rgba(0,0,0,0.08);
+      pointer-events: none;
+    }
+
+    /* 浮动装饰元素 */
+    .floating-badge {
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      animation: float 3s ease-in-out infinite;
+      z-index: 10;
+      border: 3px solid var(--card);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(3deg); }
+    }
+
+    /* 底部装饰线 */
+    .bottom-line {
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 4px;
+      width: 50%;
+      border-radius: 2px;
+      transition: all 0.5s ease;
+    }
+
+    /* 分隔线 */
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin: 60px 0;
+      opacity: 0.5;
+    }
+
+    .divider-line {
+      height: 1px;
+      width: 120px;
+      background: linear-gradient(90deg, transparent, var(--border));
+    }
+
+    .divider-line.right { background: linear-gradient(90deg, var(--border), transparent); }
+
+    /* 画廊 */
+    .gallery-section { padding: 0 20px; max-width: 1200px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 40px; }
+    .section-header h2 { font-family: "LXGW WenKai", cursive; font-size: 2rem; margin-bottom: 8px; }
+    .section-header p { opacity: 0.6; }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .photo-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    }
+
+    @media (max-width: 480px) {
+      .photo-grid { grid-template-columns: 1fr; }
+    }
+
+    .photo-card {
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 6px rgba(26, 26, 62, 0.06);
+      transition: all 0.4s ease;
+      aspect-ratio: 4/3;
+    }
+
+    .photo-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); }
+
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .photo-card:hover img { transform: scale(1.05); }
+
+    .photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(26,26,62,0.7), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      display: flex;
+      align-items: flex-end;
+      padding: 20px;
+    }
+
+    .photo-card:hover .photo-overlay { opacity: 1; }
+    .photo-title { color: white; font-weight: 500; font-size: 15px; }
+
+    /* 页脚 */
+    footer {
+      text-align: center;
+      padding: 60px 20px 40px;
+      border-top: 1px solid var(--border);
+      margin-top: 80px;
+      font-size: 14px;
+      opacity: 0.6;
+    }
+
+    /* 返回顶部 */
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 20px rgba(244, 63, 136, 0.3);
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(100px);
+      z-index: 100;
+    }
+
+    .back-to-top.visible { opacity: 1; transform: translateY(0); }
+    .back-to-top:hover { transform: scale(1.1) translateY(0); box-shadow: 0 6px 30px rgba(244, 63, 136, 0.5); }
+
+    /* 模态框 */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal.active { opacity: 1; pointer-events: auto; }
+    .modal-backdrop { position: absolute; inset: 0; background: var(--indigo-950); opacity: 0.9; }
+    .modal-container { position: relative; z-index: 2; max-width: 90vw; max-height: 85vh; }
+    .modal-image { max-width: 100%; max-height: 80vh; border-radius: 12px; display: block; }
+    
+    .modal-close { 
+      position: absolute; 
+      top: -60px; 
+      right: 0; 
+      width: 48px; 
+      height: 48px; 
+      border-radius: 50%; 
+      background: rgba(255,255,255,0.1); 
+      border: none; 
+      color: white; 
+      cursor: pointer; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      transition: all 0.3s ease; 
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.2); transform: rotate(90deg); }
+    .modal-close svg { width: 24px; height: 24px; }
+  </style>
+</head>
+<body>
+  <div class="gradient-mesh"></div>
+  <div id="petals-container"></div>
+
+  <header>
+    <button class="theme-toggle" id="themeToggle" aria-label="切换主题">🌙</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="badge">
+        <span>✨</span> NEUQ Anime Club · 火占术动漫社
+      </div>
+      <h1><span class="sakura-icon">🌸</span> 社娘展示</h1>
+      <p>东北大学秦皇岛分校动漫社两位神秘可爱的社娘姐妹</p>
+    </section>
+
+    <section class="character-card">
+      <div class="wagahai-card">
+        <div id="decorCircle1" class="decoration-circle decor-1"></div>
+        <div id="decorCircle2" class="decoration-circle decor-2"></div>
+
+        <div class="card-content">
+          <div class="character-panel">
+            <div class="tab-group">
+              <button class="tab-button active" data-sister="younger" onclick="switchSister('younger')">
+                <span>✨</span> 妹妹
+              </button>
+              <button class="tab-button" data-sister="older" onclick="switchSister('older')">
+                <span>⭐</span> 姐姐
+              </button>
+            </div>
+
+            <div class="character-info" id="charInfo">
+              <div class="personality-tag" id="personalityTag" style="background-color: #fda4c840; color: #f43f88;">
+                <span id="personality">家里蹲 · 腹黑 · 游戏宅</span>
+              </div>
+
+              <h2 id="charName">小岛汐</h2>
+              <div class="name-en" id="nameEn">Kojima Ushio · 妹妹</div>
+
+              <div class="stats" id="statsContainer">
+                <div class="stat-badge">社龄：3年</div>
+                <div class="stat-badge">生日：4月1日</div>
+                <div class="stat-badge">身高：153cm</div>
+              </div>
+
+              <div class="bio" id="bio">
+                小岛汐，重度懒癌家里蹲，但是技术力和游戏力超乎人类所能想象。中午之前一般在赛博空间里睡大觉，按她的话来说，反正群友中午前一般也不会起床，白天的信息收集工作什么的就正好满足一下姐姐的工作欲了。平日里起床后打游戏到深夜，再对姐姐给出的名单上的成员挨个施加大失忆术，偶尔白天出勤也一般是因为舞蒙瘾犯了。
+
+                内心活动细腻丰富（腹黑），渴望着受人欢迎，但因为害怕遭到讨厌而选择以个子不高的社恐三无形象示人，抗拒着与姐姐之外的人交流。内心深处的梦想是成为人类。
+              </div>
+
+              <div class="meta-info">
+                <span>🌸 火占术动漫社娘档案</span>
+                <span style="width: 4px; height: 4px; border-radius: 50%; background: currentColor;"></span>
+                <span>编号 001</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="character-image-container">
+            <div class="image-frame" id="imageFrame">
+              <img src="https://cdn.sa.net/2025/06/04/Sq9BGrQWCpklULV.jpg" alt="小岛汐" id="charImage">
+              <div class="floating-badge" id="floatBadge" style="background-color: #fda4c8;">🐱</div>
+              <div class="bottom-line" id="bottomLine" style="background: linear-gradient(90deg, transparent, #f43f88, transparent);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span>🌸 🌸 🌸</span>
+      <div class="divider-line right"></div>
+    </div>
+
+    <section class="gallery-section">
+      <div class="section-header">
+        <h2>照片画廊</h2>
+        <p>点击放大查看社娘精彩瞬间</p>
+      </div>
+      <div class="photo-grid" id="photoGrid"></div>
+    </section>
+
+    <footer>
+      <p>东北大学秦皇岛分校 · 火占术动漫社</p>
+      <p style="margin-top: 8px;">Made with 🌸 in NEUQ</p>
+    </footer>
+  </main>
+
+  <button class="back-to-top" id="backToTop">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 19V5M5 12l7-7 7 7"/>
+    </svg>
+  </button>
+
+  <div class="modal" id="modal">
+    <div class="modal-backdrop" onclick="closeModal()"></div>
+    <div class="modal-container">
+      <button class="modal-close" onclick="closeModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+      <img src="" alt="" class="modal-image" id="modalImage">
+    </div>
+  </div>
+
+  <script>
+    const sisters = {
+      younger: {
+        name: "小岛汐",
+        nameEn: "Kojima Ushio · 妹妹",
+        image: "https://cdn.sa.net/2025/06/04/Sq9BGrQWCpklULV.jpg",
+        personality: "家里蹲 · 腹黑 · 游戏宅",
+        bio: `小岛汐，重度懒癌家里蹲，但是技术力和游戏力超乎人类所能想象。中午之前一般在赛博空间里睡大觉，按她的话来说，反正群友中午前一般也不会起床，白天的信息收集工作什么的就正好满足一下姐姐的工作欲了。平日里起床后打游戏到深夜，再对姐姐给出的名单上的成员挨个施加大失忆术，偶尔白天出勤也一般是因为舞蒙瘾犯了。
+
+内心活动细腻丰富（腹黑），渴望着受人欢迎，但因为害怕遭到讨厌而选择以个子不高的社恐三无形象示人，抗拒着与姐姐之外的人交流。内心深处的梦想是成为人类。`,
+        stats: ["社龄：3年", "生日：4月1日", "身高：153cm"],
+        color: "#fda4c8",
+        accent: "#f43f88",
+        floatEmoji: "🐱",
+        id: "001"
+      },
+      older: {
+        name: "小岛凛",
+        nameEn: "Kojima Rin · 姐姐",
+        image: "https://cdn.sa.net/2025/06/04/xAcSilVetdIU8r2.jpg",
+        personality: "神秘 · 温婉 · 校园传说",
+        bio: `小岛凛，气质温婉端庄的神秘大姐姐，校园中流传着许多关于她的传闻，但却无人知晓她真正的身份。她喜欢在校园的各个角落默默观察东秦大学形形色色的学生，偶尔会温柔地与他们交谈，耐心倾听并给予恰当的建议。
+
+由于她端庄娴静的形象，经常成为同学们倾诉心事的对象，也偶尔会收到男生们含蓄而真挚的告白。然而，即便她阅历丰富，面对突如其来的感情问题时也难免感到一丝困扰。这时，她便会温柔地向算力（法力）更为强大的妹妹求助，悄悄地为这些学生施展更高强度的记忆调整术（毕竟感情的纠葛总是比单纯的好奇更为复杂）。
+
+闲暇时光，她喜爱编织，从衣服到兵马俑fufu都出自她的巧手。她也经常翻阅自己喜爱的漫画和轻小说，不过最喜欢的还是与亲爱的妹妹一起看动画。同时，她也是一位知名的coser。此外，她还时常关注动漫社的趣味动态，遇到难以理解的流行梗时，总是带着好奇心虚心向妹妹请教，不过也经常会因为不小心拿了些令人脸红的段子，而被妹妹古灵精怪地调侃一番。`,
+        stats: ["社龄：28年", "生日：节日当天认识", "身高：175cm"],
+        color: "#a78bfa",
+        accent: "#8b5cf6",
+        floatEmoji: "✨",
+        id: "002"
+      }
+    };
+
+    let currentSister = 'younger';
+
+    function switchSister(type) {
+      if (type === currentSister) return;
+      currentSister = type;
+      const sister = sisters[type];
+
+      // 更新按钮
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        const isActive = btn.dataset.sister === type;
+        btn.classList.toggle('active', isActive);
+        btn.style.background = isActive ? sister.accent : '';
+        btn.style.color = isActive ? 'white' : '';
+      });
+
+      // 更新装饰圆圈颜色
+      document.getElementById('decorCircle1').style.background = sister.color;
+      document.getElementById('decorCircle2').style.background = sister.accent;
+
+      // 更新文本
+      document.getElementById('personality').textContent = sister.personality;
+      document.getElementById('personalityTag').style.backgroundColor = sister.color + '40';
+      document.getElementById('personalityTag').style.color = sister.accent;
+      document.getElementById('charName').textContent = sister.name;
+      document.getElementById('nameEn').textContent = sister.nameEn;
+      
+      // 更新统计数据
+      const statsContainer = document.getElementById('statsContainer');
+      statsContainer.innerHTML = sister.stats.map(s => `<div class="stat-badge">${s}</div>`).join('');
+      
+      // 更新简介
+      document.getElementById('bio').textContent = sister.bio;
+      
+      // 更新档案编号
+      const metaInfo = document.querySelector('.meta-info');
+      metaInfo.querySelector('span:last-child').textContent = '编号 ' + sister.id;
+
+      // 更新图片 - 带淡入淡出效果，但保持容器尺寸不变
+      const charImage = document.getElementById('charImage');
+      charImage.style.opacity = '0';
+      
+      setTimeout(() => {
+        charImage.src = sister.image;
+        charImage.alt = sister.name;
+        charImage.style.opacity = '1';
+        
+        // 更新浮动徽章
+        const floatBadge = document.getElementById('floatBadge');
+        floatBadge.textContent = sister.floatEmoji;
+        floatBadge.style.backgroundColor = sister.color;
+        
+        // 更新底部线条
+        document.getElementById('bottomLine').style.background = 
+          `linear-gradient(90deg, transparent, ${sister.accent}, transparent)`;
+        
+        // 更新简介左侧竖条颜色
+        document.querySelector('.bio').style.setProperty('--bio-accent', sister.accent);
+      }, 200);
+    }
+
+    function createPetals() {
+      const container = document.getElementById('petals-container');
+      const count = window.innerWidth > 768 ? 10 : 5;
+      for (let i = 0; i < count; i++) {
+        const petal = document.createElement('div');
+        petal.className = 'sakura-petal';
+        petal.style.left = (5 + Math.random() * 90) + '%';
+        petal.style.animationDelay = (Math.random() * 8) + 's';
+        petal.style.animationDuration = (6 + Math.random() * 4) + 's';
+        container.appendChild(petal);
+      }
+    }
+
+    // 主题切换
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
+    });
+
+    // 返回顶部
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('visible', window.scrollY > 300);
+    });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // 模态框
+    function openModal(src) {
+      document.getElementById('modalImage').src = src;
+      document.getElementById('modal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // 渲染画廊
+    const galleryImages = [
+      { src: "https://cdn.sa.net/2025/06/04/9PZeMyUaOBt1bX2.png", title: "社团纪念合照" }
+    ];
+
+    document.getElementById('photoGrid').innerHTML = galleryImages.map(img => `
+      <div class="photo-card" onclick="openModal('${img.src}')">
+        <img src="${img.src}" alt="${img.title}" loading="lazy">
+        <div class="photo-overlay">
+          <span class="photo-title">${img.title}</span>
+        </div>
+      </div>
+    `).join('');
+
+    // 初始化简介竖条颜色变量
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+      .bio::before { background: var(--bio-accent, #f43f88) !important; }
+    `;
+    document.head.appendChild(styleSheet);
+
+    createPetals();
+  </script>
+</body>
+</html>

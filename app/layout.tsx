@@ -1,11 +1,11 @@
-import type { Metadata } from 'next'
-import './globals.css'
-import { Providers } from '@/components/providers'
+import type { Metadata } from "next"
+import { Providers } from "@/components/providers"
+import { siteConfig } from "@/lib/site-config"
+import "./globals.css"
 
 export const metadata: Metadata = {
-  title: '火占术社娘',
-  description: 'Created with 火占术社娘',
-  generator: 'neuq-anime',
+  title: siteConfig.metadata.title,
+  description: siteConfig.metadata.description,
 }
 
 export default function RootLayout({
@@ -14,12 +14,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </head>
-      <body>
+    <html lang="zh-CN" suppressHydrationWarning>
+      <body className="antialiased">
         <Providers>
+          {/* 渐变网格背景 */}
+          <div className="gradient-mesh" />
+          {/* 纹理噪点层 */}
+          <div className="noise-overlay" />
           {children}
         </Providers>
       </body>

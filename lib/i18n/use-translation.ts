@@ -15,7 +15,7 @@ export function useLanguage() {
 export function useTranslation() {
   const { language } = useLanguage()
 
-  const t = (key: string) => {
+  const t = (key: string, params?: Record<string, string | number>) => {
     const keys = key.split(".")
     let value: any = translations[language]
 
@@ -23,11 +23,15 @@ export function useTranslation() {
       if (value && value[k]) {
         value = value[k]
       } else {
-        return key
+        value = keys.reduce<any>((acc, part) => (acc && acc[part] ? acc[part] : undefined), translations.zh)
+        break
       }
     }
 
-    return value
+    if (typeof value !== "string") return key
+    if (!params) return value
+
+    return value.replace(/\{(\w+)\}/g, (_, token) => String(params[token] ?? `{${token}}`))
   }
 
   return { t }

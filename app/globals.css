@@ -1,3 +1,7 @@
+@import "@chinese-fonts/lxgwwenkai/dist/LXGWWenKai-Regular/result.css";
+@import "@chinese-fonts/lxgwwenkai/dist/LXGWWenKai-Medium/result.css";
+@import "@chinese-fonts/lxgwwenkai/dist/LXGWWenKai-Light/result.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -55,6 +59,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: "LXGW WenKai", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 
   html {
@@ -78,4 +83,191 @@
 /* 暗色模式过渡效果 */
 body {
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* === 补全的自定义变量与动画 === */
+@layer base {
+  :root {
+    --sakura-50: #fdf2f8;
+    --sakura-300: #f9a8d4;
+    --sakura-500: #ec4899;
+    --indigo-800: #3730a3;
+    --indigo-900: #312e81;
+    --indigo-950: #1e1b4b;
+  }
+  .dark {
+    --sakura-50: #831843;
+    --sakura-300: #f472b6;
+    --sakura-500: #ec4899;
+    --indigo-800: #312e81;
+    --indigo-900: #1e1b4b;
+    --indigo-950: #0f0c29;
+  }
+}
+
+@layer components {
+  .wagahai-card {
+    @apply bg-white/70 dark:bg-slate-800/70 backdrop-blur-md rounded-2xl border border-[var(--border)] shadow-md;
+  }
+
+  .gradient-mesh {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(at 40% 20%, hsla(330,80%,85%,0.2) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsla(250,60%,80%,0.15) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsla(340,70%,85%,0.15) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, hsla(260,60%,80%,0.15) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsla(330,70%,85%,0.2) 0px, transparent 50%);
+  }
+
+  .dark .gradient-mesh {
+    background:
+      radial-gradient(at 40% 20%, hsla(260,60%,25%,0.3) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsla(240,40%,20%,0.3) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsla(260,40%,20%,0.3) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, hsla(240,40%,20%,0.3) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsla(260,40%,20%,0.3) 0px, transparent 50%);
+  }
+
+  .noise-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.04;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px;
+  }
+
+  .sakura-petal {
+    position: fixed;
+    top: -20px;
+    width: 14px;
+    height: 14px;
+    background: radial-gradient(circle, rgba(253,164,200,0.8) 0%, rgba(244,63,136,0.4) 100%);
+    border-radius: 150% 0 150% 0;
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: 40;
+    animation: petal-fall linear infinite;
+  }
+
+  .dark .sakura-petal {
+    background: radial-gradient(circle, rgba(167,139,250,0.5) 0%, rgba(139,92,246,0.3) 100%);
+  }
+}
+
+@layer utilities {
+  @keyframes petal-fall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.7; }
+    90% { opacity: 0.7; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out forwards;
+  }
+
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+  }
+
+  @keyframes fade-scale-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .animate-fade-scale-in {
+    animation: fade-scale-in 0.3s ease-out forwards;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes chibi-bob {
+    0%, 100% { transform: translateY(0) rotate(var(--chibi-tilt, 0deg)); }
+    50% { transform: translateY(-10px) rotate(var(--chibi-tilt, 0deg)); }
+  }
+  .chibi-bob {
+    --chibi-tilt: -6deg;
+    animation: chibi-bob 4.2s ease-in-out infinite;
+  }
+  .chibi-bob-delayed {
+    --chibi-tilt: 6deg;
+    animation: chibi-bob 4.8s ease-in-out 0.45s infinite;
+  }
+
+  .chibi-sticker {
+    position: relative;
+    isolation: isolate;
+    filter: drop-shadow(0 20px 30px rgba(236, 72, 153, 0.16));
+  }
+
+  .chibi-sticker::after {
+    content: "";
+    position: absolute;
+    inset: auto 18% -8% 18%;
+    height: 18%;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(15, 23, 42, 0.18) 0%, rgba(15, 23, 42, 0) 72%);
+    z-index: -1;
+    filter: blur(8px);
+  }
+
+  .page-section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+  }
+
+  /* 角色切换标签 */
+  .tab-group {
+    display: inline-flex;
+    background: var(--sakura-50);
+    padding: 4px;
+    border-radius: 16px;
+    gap: 4px;
+    margin-bottom: 24px;
+  }
+  .dark .tab-group { background: var(--indigo-800); }
+
+  .tab-button {
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: transparent;
+    border: none;
+    color: hsl(var(--foreground));
+    opacity: 0.6;
+  }
+  .tab-button:hover { opacity: 0.9; background: rgba(255,255,255,0.5); }
+  .tab-button.active { opacity: 1; box-shadow: 0 4px 12px rgba(244, 63, 136, 0.3); }
+
+  /* 角色图片容器 */
+  .character-container { position: relative; }
+  .image-hover-glow { transition: box-shadow 0.3s ease; }
+  .image-hover-glow:hover { box-shadow: 0 20px 60px -15px rgba(0,0,0,0.2); }
 }

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
 import type { StaticImageData } from 'next/image';
-import mapSrc from '../public/map.png';
+import { siteConfig } from "@/lib/site-config"
 
 const MIN_SCALE = 0.5
 const MAX_SCALE = 3
@@ -33,8 +33,8 @@ export function ImmersiveMap() {
     const rawX = x - origin[0]
     const rawY = y - origin[1]
     const container = containerRef.current?.getBoundingClientRect()
-    const imgW = typeof mapSrc === 'object' ? (mapSrc as StaticImageData).width : 0
-    const imgH = typeof mapSrc === 'object' ? (mapSrc as StaticImageData).height : 0
+    const imgW = typeof siteConfig.assets.map === 'object' ? (siteConfig.assets.map as StaticImageData).width : 0
+    const imgH = typeof siteConfig.assets.map === 'object' ? (siteConfig.assets.map as StaticImageData).height : 0
     if (container) {
       const minX = container.width - imgW * scale
       const minY = container.height - imgH * scale
@@ -102,10 +102,10 @@ export function ImmersiveMap() {
 
   // After zoom, ensure translate stays within bounds
   useEffect(() => {
-    if (!containerRef.current || typeof mapSrc === 'string') return
+    if (!containerRef.current || typeof siteConfig.assets.map === 'string') return
     const rect = containerRef.current.getBoundingClientRect()
-    const imgW = (mapSrc as StaticImageData).width * scale
-    const imgH = (mapSrc as StaticImageData).height * scale
+    const imgW = (siteConfig.assets.map as StaticImageData).width * scale
+    const imgH = (siteConfig.assets.map as StaticImageData).height * scale
     const minX = rect.width - imgW
     const minY = rect.height - imgH
     setTranslate(prev => ({
@@ -132,7 +132,7 @@ export function ImmersiveMap() {
       }}
     >
       <img
-        src={typeof mapSrc === 'string' ? mapSrc : mapSrc.src}
+        src={typeof siteConfig.assets.map === 'string' ? siteConfig.assets.map : siteConfig.assets.map.src}
         alt="Immersive Game Map"
         style={{
           position: 'absolute',
