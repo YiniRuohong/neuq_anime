@@ -180,6 +180,7 @@ export default function Home() {
           <PhotoGallery />
           <footer className="text-center text-sm opacity-50 py-6 border-t border-[var(--border)]">
             <p>{t("footer.club")}</p>
+            <p className="mt-1">{t("footer.producedBy")}</p>
             <p className="mt-1">{t("footer.madeWith")}</p>
           </footer>
         </div>

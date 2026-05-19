@@ -66,6 +66,11 @@ export const siteConfig = {
       zh: "东北大学秦皇岛分校 · 动漫社",
       ja: "東北大学秦皇島分校 · アニメクラブ",
     } satisfies LocalizedText,
+    producedBy: {
+      en: "Produced by 旖旎若鸿",
+      zh: "Produced by 旖旎若鸿",
+      ja: "Produced by 旖旎若鸿",
+    } satisfies LocalizedText,
     madeWith: {
       en: "Made with 🌸 in NEUQ",
       zh: "Made with 🌸 in NEUQ",
