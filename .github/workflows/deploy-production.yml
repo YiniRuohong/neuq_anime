@@ -1,0 +1,59 @@
+name: Deploy production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: production-oc
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Configure SSH
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "${{ secrets.ORIGIN_SSH_KEY }}" > ~/.ssh/origin_key
+          chmod 600 ~/.ssh/origin_key
+          ssh-keyscan -p "${{ secrets.ORIGIN_SSH_PORT || '22' }}" "${{ secrets.ORIGIN_SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Upload static site
+        shell: bash
+        run: |
+          set -euo pipefail
+          PORT="${{ secrets.ORIGIN_SSH_PORT || '22' }}"
+          HOST="${{ secrets.ORIGIN_SSH_HOST }}"
+          USER="${{ secrets.ORIGIN_SSH_USER }}"
+          TARGET="/opt/neuq-ani/laser_webpanel/deploy/sites/oc"
+          tar -C dist -czf /tmp/oc-dist.tgz .
+          ssh -i ~/.ssh/origin_key -p "$PORT" "$USER@$HOST" "mkdir -p '$TARGET'"
+          scp -i ~/.ssh/origin_key -P "$PORT" /tmp/oc-dist.tgz "$USER@$HOST:/tmp/oc-dist.tgz"
+          ssh -i ~/.ssh/origin_key -p "$PORT" "$USER@$HOST" "rm -rf '$TARGET'/* && tar -xzf /tmp/oc-dist.tgz -C '$TARGET' && rm -f /tmp/oc-dist.tgz"
+
+      - name: Verify production
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSI https://oc.neuq-ani.me/ | tee /tmp/headers.txt
+          ! grep -i 'x-vercel' /tmp/headers.txt
+

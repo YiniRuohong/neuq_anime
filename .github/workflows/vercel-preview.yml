@@ -1,0 +1,59 @@
+name: Vercel preview
+
+on:
+  push:
+    branches: [preview, develop, test]
+  pull_request:
+
+concurrency:
+  group: vercel-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Vercel secrets
+        id: vercel
+        shell: bash
+        run: |
+          if [ -n "${VERCEL_TOKEN:-}" ] && [ -n "${VERCEL_ORG_ID:-}" ] && [ -n "${VERCEL_PROJECT_ID:-}" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "Vercel preview skipped because Vercel secrets are not configured."
+          fi
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - uses: actions/checkout@v4
+        if: steps.vercel.outputs.enabled == 'true'
+
+      - uses: pnpm/action-setup@v4
+        if: steps.vercel.outputs.enabled == 'true'
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        if: steps.vercel.outputs.enabled == 'true'
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+        if: steps.vercel.outputs.enabled == 'true'
+      - run: pnpm build
+        if: steps.vercel.outputs.enabled == 'true'
+
+      - name: Deploy preview
+        if: steps.vercel.outputs.enabled == 'true'
+        run: |
+          npm i -g vercel@latest
+          vercel pull --yes --environment=preview --token="${{ secrets.VERCEL_TOKEN }}"
+          vercel build --token="${{ secrets.VERCEL_TOKEN }}"
+          vercel deploy --prebuilt --token="${{ secrets.VERCEL_TOKEN }}"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
