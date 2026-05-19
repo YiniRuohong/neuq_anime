@@ -61,6 +61,7 @@ export const translations = {
     footer: {
       club: siteConfig.footer.club.en,
       producedBy: siteConfig.footer.producedBy.en,
+      acceleration: siteConfig.footer.acceleration.en,
       madeWith: siteConfig.footer.madeWith.en,
     },
     sisters: {
@@ -152,6 +153,7 @@ export const translations = {
     footer: {
       club: siteConfig.footer.club.zh,
       producedBy: siteConfig.footer.producedBy.zh,
+      acceleration: siteConfig.footer.acceleration.zh,
       madeWith: siteConfig.footer.madeWith.zh,
     },
     sisters: {
@@ -243,6 +245,7 @@ export const translations = {
     footer: {
       club: siteConfig.footer.club.ja,
       producedBy: siteConfig.footer.producedBy.ja,
+      acceleration: siteConfig.footer.acceleration.ja,
       madeWith: siteConfig.footer.madeWith.ja,
     },
     sisters: {

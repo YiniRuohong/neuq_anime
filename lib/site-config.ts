@@ -71,6 +71,11 @@ export const siteConfig = {
       zh: "Produced by 旖旎若鸿",
       ja: "Produced by 旖旎若鸿",
     } satisfies LocalizedText,
+    acceleration: {
+      en: "网络加速由 旖旎若鸿 提供",
+      zh: "网络加速由 旖旎若鸿 提供",
+      ja: "网络加速由 旖旎若鸿 提供",
+    } satisfies LocalizedText,
     madeWith: {
       en: "Made with 🌸 in NEUQ",
       zh: "Made with 🌸 in NEUQ",
